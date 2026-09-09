@@ -6,6 +6,16 @@
 
 ---
 
+## 📥 下载安装
+
+| 版本 | 说明 | 下载 |
+| --- | --- | --- |
+| **v1.0** | 已签名安装包（Android 8.0+，arm64-v8a，约 26MB） | [⬇️ 下载 APK](https://github.com/xliaoy/Terjemahan-oleh-Zhuxin/releases/download/v1.0/app-release-unsigned_sign.apk) |
+
+> 也可以在 [GitHub Releases 页面](https://github.com/xliaoy/Terjemahan-oleh-Zhuxin/releases) 查看所有版本。直接下载安装即可使用；安装时如提示"未知来源"，允许本次安装即可。
+
+---
+
 ## ✨ 功能介绍
 
 | 功能 | 说明 |
