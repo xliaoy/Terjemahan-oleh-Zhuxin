@@ -52,15 +52,20 @@ public final class Prefs {
 
     public static final String DEFAULT_BASE_URL = "https://open.zxui.tech/v1";
 
-    /** 离线模型默认下载地址（ModelScope，国内可达）。 */
+    /** 混元 HY-MT1.5-1.8B 默认下载地址（ModelScope www 端点，比 api 端点快 3-6 倍）。 */
     public static final String DEFAULT_MODEL_URL =
-            "https://modelscope.cn/api/v1/models/Tencent-Hunyuan/HY-MT1.5-1.8B-GGUF/repo"
-                    + "?Revision=master&FilePath=HY-MT1.5-1.8B-Q4_K_M.gguf";
+            "https://www.modelscope.cn/models/Tencent-Hunyuan/HY-MT1.5-1.8B-GGUF/resolve/master"
+                    + "/HY-MT1.5-1.8B-Q4_K_M.gguf";
 
-    /** Qwen2.5-1.5B-Instruct GGUF（多语言，约 29 种），ModelScope 国内可达。 */
+    /** Qwen2.5-1.5B-Instruct GGUF（多语言，约 29 种），ModelScope www 端点（更快）。 */
     public static final String QWEN_MODEL_URL =
-            "https://modelscope.cn/api/v1/models/Qwen/Qwen2.5-1.5B-Instruct-GGUF/repo"
-                    + "?Revision=master&FilePath=qwen2.5-1.5b-instruct-q4_k_m.gguf";
+            "https://www.modelscope.cn/models/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/master"
+                    + "/qwen2.5-1.5b-instruct-q4_k_m.gguf";
+
+    /** 备用极速源（hf-mirror，测速最快约 0.5 MB/s），可手动填入 URL 使用。 */
+    public static final String HF_MIRROR_QWEN_URL =
+            "https://hf-mirror.com/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main"
+                    + "/qwen2.5-1.5b-instruct-q4_k_m.gguf";
 
     private Prefs() {
     }
@@ -178,10 +183,10 @@ public final class Prefs {
         sp(c).edit().putBoolean(KEY_OFFLINE_MODE, v).apply();
     }
 
-    /** 离线模型下载地址（未自定义时跟随当前所选模型的默认地址）。 */
+    /** 离线模型下载地址（未自定义时跟随当前所选模型的默认地址；旧版慢速 api 端点自动迁移为新地址）。 */
     public static String modelUrl(Context c) {
         String v = sp(c).getString(KEY_MODEL_URL, "");
-        if (v == null || v.isEmpty()) {
+        if (v == null || v.isEmpty() || v.contains("/api/v1/models/")) {
             return modelDefaultUrl(offlineModel(c));
         }
         return v;

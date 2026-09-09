@@ -78,6 +78,9 @@
     <string name="switch_offline_text">Use offline translation (local model, no network)</string>
     <string name="model_url_hint">Model download URL (~1GB)</string>
     <string name="btn_download_model">Download offline model</string>
+    <string name="btn_cancel_download">Cancel download</string>
+    <string name="download_connecting">Connecting to server, preparing download…</string>
+    <string name="toast_download_canceled">Download canceled</string>
     <string name="text_model_downloaded">Model downloaded (%.0f MB)</string>
     <string name="btn_downloaded">Downloaded</string>
     <string name="text_model_not_downloaded">Model not downloaded</string>

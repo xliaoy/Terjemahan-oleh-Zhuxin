@@ -47,7 +47,13 @@ public final class ModelDownloader {
                 .writeTimeout(0, TimeUnit.SECONDS)
                 .build();
 
-        Request request = new Request.Builder().url(url).get().build();
+        Request request = new Request.Builder()
+                .url(url)
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 "
+                        + "(KHTML, like Gecko) Chrome/120.0 Mobile Safari/537.36")
+                .header("Accept", "*/*")
+                .get()
+                .build();
         Call call = client.newCall(request);
         currentCall = call;
 

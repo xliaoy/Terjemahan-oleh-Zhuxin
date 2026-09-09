@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean initAppLang = true;
     private boolean uiUpdating = false;
     private boolean pendingStartFloating = false;
+    private boolean downloading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -515,12 +516,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startDownloadModel() {
+        // 正在下载：再次点击 = 取消下载
+        if (downloading) {
+            downloading = false;
+            ModelDownloader.cancel();
+            btnDownloadModel.setText(R.string.btn_download_model);
+            btnDownloadModel.setEnabled(true);
+            textModelStatus.setText(R.string.text_model_not_downloaded);
+            Toast.makeText(this, R.string.toast_download_canceled, Toast.LENGTH_SHORT).show();
+            return;
+        }
         String url = editModelUrl.getText().toString().trim();
         if (url.isEmpty()) {
             Toast.makeText(this, R.string.toast_fill_model_url, Toast.LENGTH_SHORT).show();
             return;
         }
-        btnDownloadModel.setEnabled(false);
+        downloading = true;
+        // 立即给用户反馈，避免"不知道有没有开始下载"
+        btnDownloadModel.setText(R.string.btn_cancel_download);
+        btnDownloadModel.setEnabled(true);
+        textModelStatus.setText(R.string.download_connecting);
         ModelDownloader.download(this, url, new ModelDownloader.ProgressCallback() {
             @Override
             public void onProgress(final long downloaded, final long total) {
@@ -529,8 +544,10 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         String s;
                         if (total > 0) {
+                            int pct = (int) (downloaded * 100L / total);
                             s = getString(R.string.toast_downloading,
-                                    downloaded / 1024 / 1024, total / 1024 / 1024);
+                                    downloaded / 1024 / 1024, total / 1024 / 1024)
+                                    + " (" + pct + "%)";
                         } else {
                             s = getString(R.string.toast_downloading_no_total,
                                     downloaded / 1024 / 1024);
@@ -545,9 +562,12 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        btnDownloadModel.setEnabled(true);
+                        downloading = false;
                         if (success) {
                             Toast.makeText(MainActivity.this, R.string.toast_download_finish,
+                                    Toast.LENGTH_SHORT).show();
+                        } else if ("已取消".equals(error) || (error != null && error.contains("Canceled"))) {
+                            Toast.makeText(MainActivity.this, R.string.toast_download_canceled,
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(MainActivity.this,
