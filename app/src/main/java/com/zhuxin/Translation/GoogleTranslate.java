@@ -18,7 +18,7 @@ import okhttp3.Response;
  */
 public final class GoogleTranslate {
 
-    public interface Callback {
+    public interface ResultCallback {
         void onResult(String text, String error);
     }
 
@@ -32,7 +32,7 @@ public final class GoogleTranslate {
     }
 
     public static void translate(final String text, final String sourceLang,
-                                 final String targetLang, final Callback cb) {
+                                 final String targetLang, final ResultCallback cb) {
         if (text == null || text.trim().isEmpty()) {
             cb.onResult(null, "空文本");
             return;
@@ -56,7 +56,7 @@ public final class GoogleTranslate {
                 .get()
                 .build();
 
-        client.newCall(req).enqueue(new Callback() {
+        client.newCall(req).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 cb.onResult(null, e.getMessage());

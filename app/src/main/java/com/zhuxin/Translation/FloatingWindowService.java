@@ -335,7 +335,7 @@ public class FloatingWindowService extends Service {
                     translateOffline(text, sourceLang, targetLang);
                 } else if (Prefs.TE_GOOGLE.equals(engine)) {
                     GoogleTranslate.translate(text, sourceLang, targetLang,
-                            new GoogleTranslate.Callback() {
+                            new GoogleTranslate.ResultCallback() {
                                 @Override
                                 public void onResult(String result, String error) {
                                     if (error != null) {
