@@ -76,7 +76,6 @@
     <string name="section_translate_engine">Translation engine</string>
     <string name="te_ai">Online AI (OpenAI-compatible)</string>
     <string name="te_offline">On-device model (GGUF)</string>
-    <string name="te_google">Google free translation (online)</string>
 
     <!-- Settings: offline model -->
     <string name="section_offline">Offline model</string>

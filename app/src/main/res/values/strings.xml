@@ -76,7 +76,6 @@
     <string name="section_translate_engine">翻译引擎</string>
     <string name="te_ai">在线 AI（OpenAI 兼容接口）</string>
     <string name="te_offline">离线本地模型（GGUF）</string>
-    <string name="te_google">Google 免费翻译（在线）</string>
 
     <!-- 设置：离线模型 -->
     <string name="section_offline">离线模型</string>

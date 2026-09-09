@@ -213,13 +213,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 翻译引擎：在线 AI / 离线本地 / Google 免费
+        // 翻译引擎：在线 AI / 离线本地
         final String[] teOptions = {
                 getString(R.string.te_ai),
-                getString(R.string.te_offline),
-                getString(R.string.te_google)
+                getString(R.string.te_offline)
         };
-        final String[] teKeys = {Prefs.TE_AI, Prefs.TE_OFFLINE, Prefs.TE_GOOGLE};
+        final String[] teKeys = {Prefs.TE_AI, Prefs.TE_OFFLINE};
         ArrayAdapter<String> teAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, teOptions);
         teAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -288,10 +287,13 @@ public class MainActivity extends AppCompatActivity {
         if (v == null) {
             return;
         }
+        // 固定基准内边距（标题栏上下 10dp 留白），避免 insets 多次派发时状态栏高度被重复累加
+        final int baseTop = (int) (10 * getResources().getDisplayMetrics().density + 0.5f);
+        final int baseBottom = v.getPaddingBottom();
         ViewCompat.setOnApplyWindowInsetsListener(v, (view, insets) -> {
             Insets bars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
-            view.setPadding(view.getPaddingLeft(), bars.top + view.getPaddingTop(),
-                    view.getPaddingRight(), view.getPaddingBottom());
+            view.setPadding(view.getPaddingLeft(), baseTop + bars.top,
+                    view.getPaddingRight(), baseBottom);
             return insets;
         });
     }

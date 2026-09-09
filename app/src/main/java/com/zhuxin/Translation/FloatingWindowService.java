@@ -368,25 +368,6 @@ public class FloatingWindowService extends Service {
                 final String targetLang = Prefs.targetLang(FloatingWindowService.this);
                 if (Prefs.TE_OFFLINE.equals(engine)) {
                     translateOffline(text, sourceLang, targetLang);
-                } else if (Prefs.TE_GOOGLE.equals(engine)) {
-                    GoogleTranslate.translate(text, sourceLang, targetLang,
-                            new GoogleTranslate.ResultCallback() {
-                                @Override
-                                public void onResult(String result, String error) {
-                                    if (error != null) {
-                                        DebugLog.error(FloatingWindowService.this, "Google",
-                                                "翻译失败: " + error, null);
-                                        show(getString(R.string.msg_translate_failed, error));
-                                    } else if (result == null || result.isEmpty()) {
-                                        DebugLog.error(FloatingWindowService.this, "Google",
-                                                "翻译结果为空", null);
-                                        show(getString(R.string.msg_translate_empty));
-                                    } else {
-                                        Prefs.addHistory(FloatingWindowService.this, text, result);
-                                        show(result);
-                                    }
-                                }
-                            });
                 } else {
                     new AiClient(baseUrl, apiKey, model).translate(
                             text, sourceLang, targetLang,

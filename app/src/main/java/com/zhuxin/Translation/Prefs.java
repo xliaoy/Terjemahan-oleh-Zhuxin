@@ -47,7 +47,6 @@ public final class Prefs {
     // 翻译引擎
     public static final String TE_AI = "ai";
     public static final String TE_OFFLINE = "offline";
-    public static final String TE_GOOGLE = "google";
 
     // 离线模型
     public static final String MODEL_HUNYUAN = "hunyuan";
@@ -128,7 +127,7 @@ public final class Prefs {
 
     // ---------- 翻译引擎 ----------
 
-    /** 翻译引擎：ai / offline / google。兼容旧版"使用离线翻译"开关。 */
+    /** 翻译引擎：ai / offline。兼容旧版"使用离线翻译"开关；已移除的引擎值自动回退。 */
     public static String translateEngine(Context c) {
         SharedPreferences s = sp(c);
         if (!s.contains(KEY_TRANSLATE_ENGINE)) {
@@ -138,7 +137,13 @@ public final class Prefs {
             }
             return TE_AI;
         }
-        return s.getString(KEY_TRANSLATE_ENGINE, TE_AI);
+        String v = s.getString(KEY_TRANSLATE_ENGINE, TE_AI);
+        if (!TE_AI.equals(v) && !TE_OFFLINE.equals(v)) {
+            // 旧版 Google 引擎已移除：回退到在线 AI
+            s.edit().putString(KEY_TRANSLATE_ENGINE, TE_AI).apply();
+            return TE_AI;
+        }
+        return v;
     }
 
     public static void setTranslateEngine(Context c, String v) {
