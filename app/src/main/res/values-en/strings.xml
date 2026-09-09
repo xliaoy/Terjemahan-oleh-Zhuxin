@@ -1,0 +1,124 @@
+<resources>
+    <string name="app_name">ZhuXin Translator</string>
+
+    <!-- Bottom navigation -->
+    <string name="tab_home">Home</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Home: floating switch -->
+    <string name="home_floating_on">Floating translation ON</string>
+    <string name="home_floating_off">Floating translation OFF</string>
+    <string name="home_tap_hint_on">Tap the window to translate, long-press to move, long-press the corner to resize</string>
+    <string name="home_tap_hint_off">Turn it on, then aim the area at any text to translate</string>
+
+    <!-- Home: languages -->
+    <string name="section_languages">Translation languages</string>
+    <string name="lang_source">Source language (original)</string>
+    <string name="lang_target">Target language (translate into)</string>
+    <string-array name="lang_display">
+        <item>Auto detect</item>
+        <item>Simplified Chinese</item>
+        <item>English</item>
+        <item>Japanese</item>
+        <item>Korean</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Spanish</item>
+        <item>Russian</item>
+    </string-array>
+
+    <!-- Home: permissions -->
+    <string name="section_permission">Permissions</string>
+    <string name="btn_overlay_permission">Grant overlay permission</string>
+    <string name="btn_screen_permission">Grant screen capture permission</string>
+    <string name="permission_name_overlay">Overlay</string>
+    <string name="permission_name_screen">Screen capture</string>
+    <string name="permission_granted">Granted</string>
+    <string name="permission_not_granted">Not granted</string>
+    <string name="btn_history">Translation history</string>
+    <string name="history_empty">No translation history yet</string>
+
+    <!-- Settings: online AI -->
+    <string name="section_ai">Online AI translation</string>
+    <string name="ai_base_url_hint">Base URL</string>
+    <string name="ai_api_key_hint">API Key</string>
+    <string name="btn_refresh_models">Refresh models</string>
+
+    <!-- Settings: offline -->
+    <string name="section_offline">Offline translation</string>
+    <string name="switch_offline_text">Use offline translation (local model, no network)</string>
+    <string name="model_url_hint">Model download URL (~1GB)</string>
+    <string name="btn_download_model">Download offline model</string>
+    <string name="text_model_downloaded">Model downloaded (%.0f MB)</string>
+    <string name="btn_downloaded">Downloaded</string>
+    <string name="text_model_not_downloaded">Model not downloaded</string>
+    <string name="toast_download_finish">Model download complete</string>
+    <string name="toast_download_failed">Download failed: %s</string>
+    <string name="toast_downloading">Downloading %1$d/%2$d MB</string>
+    <string name="toast_downloading_no_total">Downloading %1$d MB</string>
+    <string name="toast_fill_model_url">Please enter the model download URL first</string>
+    <string name="toast_fill_api_key">Please enter the API Key first</string>
+    <string name="toast_model_get_failed">Failed to load models: %s</string>
+    <string name="toast_model_get_ok">Loaded %d models</string>
+    <string name="toast_model_not_downloaded_first">Model is not downloaded yet. Tap "Download offline model".</string>
+    <string name="toast_need_screen">Grant screen capture permission to use floating translation</string>
+    <string name="toast_screen_granted">Screen capture permission granted</string>
+    <string name="toast_screen_denied">Screen capture permission not granted, cannot start floating translation</string>
+    <string name="permission_status_fmt">%1$s: %2$s   %3$s: %4$s</string>
+
+    <!-- Settings: floating window -->
+    <string name="section_floating">Floating window</string>
+    <string name="opacity_title">Floating window opacity</string>
+    <string name="opacity_value">Opacity %d%%</string>
+
+    <!-- Settings: recognition area -->
+    <string name="section_region">Recognition area size</string>
+    <string name="region_width">Width</string>
+    <string name="region_height">Height</string>
+    <string name="region_w_value">Width %dpx</string>
+    <string name="region_h_value">Height %dpx</string>
+
+    <!-- Settings: app language -->
+    <string name="section_app_language">App language</string>
+    <string name="lang_option_system">Follow system</string>
+    <string name="lang_option_zh">简体中文</string>
+    <string name="lang_option_en">English</string>
+
+    <!-- Settings: debug mode -->
+    <string name="section_debug">Debug mode</string>
+    <string name="switch_debug_text">Save screenshots and logs on failure</string>
+    <string name="debug_mode_hint">When enabled, screenshots and logs are saved to Downloads whenever no text is detected or a translation error occurs; nothing is saved when disabled.</string>
+
+    <!-- Settings: about -->
+    <string name="section_about">About</string>
+    <string name="about_info">A floating translator for your phone: online AI and offline on-device translation.</string>
+    <string name="btn_reward_wechat">Tip with WeChat</string>
+    <string name="btn_reward_alipay">Tip with Alipay</string>
+    <string name="reward_title">Thank you for your support</string>
+    <string name="btn_close">Close</string>
+    <string name="reward_scan_hint">Long-press the QR code to scan. Thank you for your support!</string>
+    <string name="reward_missing" formatted="false">No %1$s QR code image yet. Place the image at res/drawable/reward_%2$s.png and reinstall.</string>
+    <string name="version">Version %s</string>
+
+    <!-- Floating window -->
+    <string name="btn_resize">Resize</string>
+    <string name="floating_tap_to_translate">Tap to translate · Long-press to move · Swipe to scroll · Drag the corner to resize</string>
+    <string name="floating_translating">Translating…</string>
+    <string name="floating_no_text">No text detected</string>
+    <string name="floating_need_permission">Please grant overlay and screen capture permissions first</string>
+    <string name="msg_no_text_saved">No text detected (screenshot saved to Downloads/ocr_region_*.png)</string>
+    <string name="msg_no_foreign">No foreign text detected (screenshot saved to Downloads/ocr_region_*.png)</string>
+    <string name="msg_no_text_plain">No text detected</string>
+    <string name="msg_no_foreign_plain">No foreign text detected</string>
+    <string name="msg_capture_failed">Capture failed, please check screen capture permission</string>
+    <string name="msg_translate_failed">Translation failed: %s</string>
+    <string name="msg_translate_empty">Empty translation result</string>
+    <string name="msg_offline_failed">Offline translation failed: %s</string>
+    <string name="msg_offline_empty">Empty offline translation result</string>
+    <string name="msg_need_ai_config">Please configure the AI endpoint and model in Settings first</string>
+
+    <!-- Notification -->
+    <string name="notif_channel">Floating translator</string>
+    <string name="notif_title">Floating translator</string>
+    <string name="notif_text">Floating translation is on. Drag the ball to aim the box at text</string>
+</resources>

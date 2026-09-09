@@ -1,0 +1,17 @@
+<resources>
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent">#4CAF50</color>
+    <color name="floating_bg">#263238</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="text_primary">#1B1B1B</color>
+    <color name="text_secondary">#888888</color>
+    <color name="text_tertiary">#6B6B6B</color>
+    <color name="page_bg">#FFFFFF</color>
+    <color name="divider">#EEEEEE</color>
+    <color name="panel_bg">#FFFFFF</color>
+    <color name="floating_card_bg">#F7F7F9</color>
+    <color name="perm_status_ok">#2E7D32</color>
+    <color name="perm_status_bad">#D32F2F</color>
+</resources>

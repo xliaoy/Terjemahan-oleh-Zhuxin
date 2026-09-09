@@ -1,0 +1,126 @@
+<resources>
+    <string name="app_name">株馨翻译器</string>
+
+    <!-- 底部导航 -->
+    <string name="tab_home">首页</string>
+    <string name="tab_settings">设置</string>
+
+    <!-- 首页：悬浮窗开关 -->
+    <string name="home_floating_on">悬浮翻译已开启</string>
+    <string name="home_floating_off">悬浮翻译已关闭</string>
+    <string name="home_tap_hint_on">点击窗口翻译，长按窗口移动，长按右下角调整大小</string>
+    <string name="home_tap_hint_off">点击开启悬浮翻译，对准内容即可翻译</string>
+
+    <!-- 首页：翻译语言 -->
+    <string name="section_languages">翻译语言设置</string>
+    <string name="lang_source">源语言（原文语言）</string>
+    <string name="lang_target">目标语言（翻译成）</string>
+    <string-array name="lang_display">
+        <item>自动检测</item>
+        <item>简体中文</item>
+        <item>英文</item>
+        <item>日文</item>
+        <item>韩文</item>
+        <item>法文</item>
+        <item>德文</item>
+        <item>西班牙文</item>
+        <item>俄文</item>
+    </string-array>
+
+    <!-- 首页：权限 -->
+    <string name="section_permission">权限状态</string>
+    <string name="btn_overlay_permission">授予悬浮窗权限</string>
+    <string name="btn_screen_permission">授予屏幕截图权限</string>
+    <string name="permission_name_overlay">悬浮窗权限</string>
+    <string name="permission_name_screen">屏幕截图</string>
+    <string name="permission_granted">已授予</string>
+    <string name="permission_not_granted">未授予</string>
+    <string name="btn_history">查看翻译历史</string>
+    <string name="history_empty">暂无翻译历史</string>
+
+    <!-- 设置：在线 AI -->
+    <string name="section_ai">在线 AI 翻译设置</string>
+    <string name="ai_base_url_hint">Base URL</string>
+    <string name="ai_api_key_hint">API Key</string>
+    <string name="btn_refresh_models">刷新模型</string>
+
+    <!-- 设置：离线翻译 -->
+    <string name="section_offline">离线翻译设置</string>
+    <string name="switch_offline_text">使用离线翻译（本地模型，无需联网）</string>
+    <string name="model_url_hint">模型下载地址（约 1GB）</string>
+    <string name="btn_download_model">下载离线模型</string>
+    <string name="text_model_downloaded">模型已下载（%.0f MB）</string>
+    <string name="btn_downloaded">已下载</string>
+    <string name="text_model_not_downloaded">模型未下载</string>
+    <string name="toast_download_finish">模型下载完成</string>
+    <string name="toast_download_failed">下载失败：%s</string>
+    <string name="toast_downloading">下载中 %1$d/%2$d MB</string>
+    <string name="toast_downloading_no_total">下载中 %1$d MB</string>
+    <string name="toast_fill_model_url">请先填写模型下载地址</string>
+    <string name="toast_fill_api_key">请先填写 API Key</string>
+    <string name="toast_model_get_failed">获取模型失败：%s</string>
+    <string name="toast_model_get_ok">已获取 %d 个模型</string>
+    <string name="toast_model_not_downloaded_first">尚未下载离线模型，请点击「下载离线模型」</string>
+    <string name="toast_need_screen">请授予屏幕截图权限以使用悬浮翻译</string>
+    <string name="toast_screen_granted">屏幕截图权限已授予</string>
+    <string name="toast_screen_denied">未授予屏幕截图权限，无法开启悬浮翻译</string>
+    <string name="permission_status_fmt">%1$s：%2$s　%3$s：%4$s</string>
+
+    <!-- 设置：悬浮窗 -->
+    <string name="section_floating">悬浮窗调节</string>
+    <string name="opacity_title">悬浮窗透明度</string>
+    <string name="opacity_value">透明度 %d%%</string>
+
+    <!-- 设置：识别区域 -->
+    <string name="section_region">识别区域大小调节</string>
+    <string name="region_width">宽度</string>
+    <string name="region_height">高度</string>
+    <string name="region_w_value">宽度 %dpx</string>
+    <string name="region_h_value">高度 %dpx</string>
+
+    <!-- 设置：应用语言 -->
+    <string name="section_app_language">应用语言（界面语言）</string>
+    <string name="lang_option_system">跟随系统</string>
+    <string name="lang_option_zh">简体中文</string>
+    <string name="lang_option_en">English</string>
+
+    <!-- 设置：调试模式 -->
+    <string name="section_debug">调试模式</string>
+    <string name="switch_debug_text">识别失败时保存截图与日志</string>
+    <string name="debug_mode_hint">开启后，识别不到文字或翻译出错时，会把截图和日志保存到「下载」目录，便于排查问题；关闭则不保存。</string>
+
+    <!-- 设置：关于 -->
+    <string name="section_about">关于</string>
+    <string name="about_info">手机悬浮翻译工具，支持在线 AI 与离线本地翻译。</string>
+    <string name="btn_reward_wechat">微信打赏</string>
+    <string name="btn_reward_alipay">支付宝打赏</string>
+    <string name="reward_title">感谢支持</string>
+    <string name="btn_close">关闭</string>
+    <string name="reward_scan_hint">长按识别二维码，感谢你的支持！</string>
+    <string name="reward_missing" formatted="false">还没有%1$s收款码图片。请把图片放到项目的 res/drawable/reward_%2$s.png 后重新安装。</string>
+    <string name="version">版本 %s</string>
+
+    <!-- 悬浮窗 -->
+    <string name="btn_resize">调整大小</string>
+
+    <!-- 悬浮窗 -->
+    <string name="floating_tap_to_translate">点击翻译 · 长按拖动窗口 · 上下滑动看全文 · 按住右下角缩放</string>
+    <string name="floating_translating">翻译中…</string>
+    <string name="floating_no_text">未识别到文字</string>
+    <string name="floating_need_permission">请先授权悬浮窗与录屏权限</string>
+    <string name="msg_no_text_saved">未识别到文字（已存截图到 下载/ocr_region_*.png）</string>
+    <string name="msg_no_foreign">未检测到外文（已存截图到 下载/ocr_region_*.png）</string>
+    <string name="msg_no_text_plain">未识别到文字</string>
+    <string name="msg_no_foreign_plain">未检测到外文</string>
+    <string name="msg_capture_failed">截图失败，请确认录屏权限</string>
+    <string name="msg_translate_failed">翻译失败：%s</string>
+    <string name="msg_translate_empty">翻译结果为空</string>
+    <string name="msg_offline_failed">离线翻译失败：%s</string>
+    <string name="msg_offline_empty">离线翻译结果为空</string>
+    <string name="msg_need_ai_config">请先在设置里配置 AI 接口与模型</string>
+
+    <!-- 通知 -->
+    <string name="notif_channel">悬浮翻译</string>
+    <string name="notif_title">悬浮翻译</string>
+    <string name="notif_text">悬浮翻译已开启，拖动悬浮球让识别框对准文字</string>
+</resources>
