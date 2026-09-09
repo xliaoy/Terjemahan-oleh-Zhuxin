@@ -30,9 +30,10 @@ public final class LocalTranslator {
     private LocalTranslator() {
     }
 
-    /** 离线模型文件存放路径。 */
+    /** 离线模型文件存放路径（跟随设置里选择的模型）。 */
     public static File modelPath(Context c) {
-        return new File(c.getFilesDir(), "models/HY-MT1.5-1.8B-Q4_K_M.gguf");
+        return new File(c.getFilesDir(),
+                "models/" + Prefs.modelFileName(Prefs.offlineModel(c)));
     }
 
     /** 模型文件是否有效：存在且以 GGUF 魔数开头（可识别出下载不完整或损坏的文件）。 */

@@ -31,8 +31,24 @@ public final class Prefs {
     private static final String KEY_MODEL_URL = "model_url";
     private static final String KEY_LANG = "app_lang";
     private static final String KEY_DEBUG_MODE = "debug_mode";
+    private static final String KEY_OCR_ENGINE = "ocr_engine";
+    private static final String KEY_TRANSLATE_ENGINE = "translate_engine";
+    private static final String KEY_OFFLINE_MODEL = "offline_model";
 
     private static final int MAX_HISTORY = 50;
+
+    // OCR 引擎
+    public static final String OCR_MLKIT = "mlkit";
+    public static final String OCR_AI_VISION = "ai_vision";
+
+    // 翻译引擎
+    public static final String TE_AI = "ai";
+    public static final String TE_OFFLINE = "offline";
+    public static final String TE_GOOGLE = "google";
+
+    // 离线模型
+    public static final String MODEL_HUNYUAN = "hunyuan";
+    public static final String MODEL_QWEN = "qwen";
 
     public static final String DEFAULT_BASE_URL = "https://open.zxui.tech/v1";
 
@@ -41,11 +57,71 @@ public final class Prefs {
             "https://modelscope.cn/api/v1/models/Tencent-Hunyuan/HY-MT1.5-1.8B-GGUF/repo"
                     + "?Revision=master&FilePath=HY-MT1.5-1.8B-Q4_K_M.gguf";
 
+    /** Qwen2.5-1.5B-Instruct GGUF（多语言，约 29 种），ModelScope 国内可达。 */
+    public static final String QWEN_MODEL_URL =
+            "https://modelscope.cn/api/v1/models/Qwen/Qwen2.5-1.5B-Instruct-GGUF/repo"
+                    + "?Revision=master&FilePath=qwen2.5-1.5b-instruct-q4_k_m.gguf";
+
     private Prefs() {
     }
 
     private static SharedPreferences sp(Context c) {
         return c.getApplicationContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    }
+
+    // ---------- OCR 引擎 ----------
+
+    public static String ocrEngine(Context c) {
+        return sp(c).getString(KEY_OCR_ENGINE, OCR_MLKIT);
+    }
+
+    public static void setOcrEngine(Context c, String v) {
+        sp(c).edit().putString(KEY_OCR_ENGINE, v == null ? OCR_MLKIT : v).apply();
+    }
+
+    // ---------- 翻译引擎 ----------
+
+    /** 翻译引擎：ai / offline / google。兼容旧版"使用离线翻译"开关。 */
+    public static String translateEngine(Context c) {
+        SharedPreferences s = sp(c);
+        if (!s.contains(KEY_TRANSLATE_ENGINE)) {
+            if (s.getBoolean(KEY_OFFLINE_MODE, false)) {
+                s.edit().putString(KEY_TRANSLATE_ENGINE, TE_OFFLINE).apply();
+                return TE_OFFLINE;
+            }
+            return TE_AI;
+        }
+        return s.getString(KEY_TRANSLATE_ENGINE, TE_AI);
+    }
+
+    public static void setTranslateEngine(Context c, String v) {
+        sp(c).edit().putString(KEY_TRANSLATE_ENGINE, v == null ? TE_AI : v).apply();
+    }
+
+    // ---------- 离线模型 ----------
+
+    public static String offlineModel(Context c) {
+        return sp(c).getString(KEY_OFFLINE_MODEL, MODEL_HUNYUAN);
+    }
+
+    public static void setOfflineModel(Context c, String v) {
+        sp(c).edit().putString(KEY_OFFLINE_MODEL, v == null ? MODEL_HUNYUAN : v).apply();
+    }
+
+    /** 模型 key → 本地文件名。 */
+    public static String modelFileName(String key) {
+        if (MODEL_QWEN.equals(key)) {
+            return "Qwen2.5-1.5B-Instruct-Q4_K_M.gguf";
+        }
+        return "HY-MT1.5-1.8B-Q4_K_M.gguf";
+    }
+
+    /** 模型 key → 默认下载地址。 */
+    public static String modelDefaultUrl(String key) {
+        if (MODEL_QWEN.equals(key)) {
+            return QWEN_MODEL_URL;
+        }
+        return DEFAULT_MODEL_URL;
     }
 
     public static String baseUrl(Context c) {
@@ -102,10 +178,13 @@ public final class Prefs {
         sp(c).edit().putBoolean(KEY_OFFLINE_MODE, v).apply();
     }
 
-    /** 离线模型下载地址。 */
+    /** 离线模型下载地址（未自定义时跟随当前所选模型的默认地址）。 */
     public static String modelUrl(Context c) {
-        String v = sp(c).getString(KEY_MODEL_URL, DEFAULT_MODEL_URL);
-        return v == null || v.isEmpty() ? DEFAULT_MODEL_URL : v;
+        String v = sp(c).getString(KEY_MODEL_URL, "");
+        if (v == null || v.isEmpty()) {
+            return modelDefaultUrl(offlineModel(c));
+        }
+        return v;
     }
 
     public static void setModelUrl(Context c, String v) {

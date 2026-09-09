@@ -73,7 +73,7 @@
                 android:text="@string/btn_refresh_models" />
         </LinearLayout>
 
-        <!-- 离线翻译设置 -->
+        <!-- 离线模型设置 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,12 +82,18 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switch_offline"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/switch_offline_text" />
+            android:text="@string/offline_model_label"
+            android:textSize="13sp" />
+
+        <Spinner
+            android:id="@+id/spinner_offline_model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

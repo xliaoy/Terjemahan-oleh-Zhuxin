@@ -50,12 +50,14 @@ public class MainActivity extends AppCompatActivity {
     private MaterialSwitch switchFloating;
     private TextView textFloatingState;
     private TextView textFloatingHint;
-    private MaterialSwitch switchOffline;
     private MaterialSwitch switchDebug;
     private EditText editBaseUrl;
     private EditText editApiKey;
     private EditText editModelUrl;
     private Spinner spinnerModel;
+    private Spinner spinnerOcrEngine;
+    private Spinner spinnerTranslateEngine;
+    private Spinner spinnerOfflineModel;
     private Spinner spinnerSourceLang;
     private Spinner spinnerTargetLang;
     private Spinner spinnerAppLang;
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_reward_alipay).setOnClickListener(v -> showRewardDialog("alipay"));
 
         setupBottomNav();
+        setupEngines();
         setupAiConfig();
         setupLanguage();
         setupOffline();
@@ -132,6 +135,75 @@ public class MainActivity extends AppCompatActivity {
         setupAppLanguage();
         updatePermissionStatus();
         updateFloatingUI();
+    }
+
+    /** 首页：OCR 引擎与翻译引擎选择。 */
+    private void setupEngines() {
+        // OCR 引擎：本地 ML Kit / AI 视觉在线
+        final String[] ocrOptions = {
+                getString(R.string.ocr_engine_mlkit),
+                getString(R.string.ocr_engine_ai_vision)
+        };
+        final String[] ocrKeys = {Prefs.OCR_MLKIT, Prefs.OCR_AI_VISION};
+        ArrayAdapter<String> ocrAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, ocrOptions);
+        ocrAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOcrEngine.setAdapter(ocrAdapter);
+        String curOcr = Prefs.ocrEngine(this);
+        for (int i = 0; i < ocrKeys.length; i++) {
+            if (ocrKeys[i].equals(curOcr)) {
+                spinnerOcrEngine.setSelection(i);
+                break;
+            }
+        }
+        spinnerOcrEngine.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0 && position < ocrKeys.length) {
+                    Prefs.setOcrEngine(MainActivity.this, ocrKeys[position]);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
+        });
+
+        // 翻译引擎：在线 AI / 离线本地 / Google 免费
+        final String[] teOptions = {
+                getString(R.string.te_ai),
+                getString(R.string.te_offline),
+                getString(R.string.te_google)
+        };
+        final String[] teKeys = {Prefs.TE_AI, Prefs.TE_OFFLINE, Prefs.TE_GOOGLE};
+        ArrayAdapter<String> teAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, teOptions);
+        teAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTranslateEngine.setAdapter(teAdapter);
+        String curTe = Prefs.translateEngine(this);
+        for (int i = 0; i < teKeys.length; i++) {
+            if (teKeys[i].equals(curTe)) {
+                spinnerTranslateEngine.setSelection(i);
+                break;
+            }
+        }
+        spinnerTranslateEngine.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0 && position < teKeys.length) {
+                    Prefs.setTranslateEngine(MainActivity.this, teKeys[position]);
+                    if (Prefs.TE_OFFLINE.equals(teKeys[position])
+                            && !LocalTranslator.isModelValid(MainActivity.this)) {
+                        Toast.makeText(MainActivity.this, R.string.toast_model_not_downloaded_first,
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
+        });
     }
 
     private void setupEdgeToEdge() {
@@ -174,7 +246,9 @@ public class MainActivity extends AppCompatActivity {
         spinnerTargetLang = findViewById(R.id.spinner_target_lang);
         spinnerAppLang = findViewById(R.id.spinner_app_lang);
         btnRefreshModels = findViewById(R.id.btn_refresh_models);
-        switchOffline = findViewById(R.id.switch_offline);
+        spinnerOcrEngine = findViewById(R.id.spinner_ocr_engine);
+        spinnerTranslateEngine = findViewById(R.id.spinner_translate_engine);
+        spinnerOfflineModel = findViewById(R.id.spinner_offline_model);
         switchDebug = findViewById(R.id.switch_debug);
         editModelUrl = findViewById(R.id.edit_model_url);
         btnDownloadModel = findViewById(R.id.btn_download_model);
@@ -369,15 +443,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupOffline() {
-        switchOffline.setChecked(Prefs.offlineMode(this));
-        switchOffline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // 离线模型选择：切换后更新 URL 与模型状态
+        final String[] modelOptions = {
+                getString(R.string.model_hunyuan),
+                getString(R.string.model_qwen)
+        };
+        final String[] modelKeys = {Prefs.MODEL_HUNYUAN, Prefs.MODEL_QWEN};
+        ArrayAdapter<String> modelAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, modelOptions);
+        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOfflineModel.setAdapter(modelAdapter);
+        String curModel = Prefs.offlineModel(this);
+        for (int i = 0; i < modelKeys.length; i++) {
+            if (modelKeys[i].equals(curModel)) {
+                spinnerOfflineModel.setSelection(i);
+                break;
+            }
+        }
+        spinnerOfflineModel.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Prefs.setOfflineMode(MainActivity.this, isChecked);
-                if (isChecked && !LocalTranslator.isModelValid(MainActivity.this)) {
-                    Toast.makeText(MainActivity.this, getString(R.string.toast_model_not_downloaded_first),
-                            Toast.LENGTH_LONG).show();
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0 && position < modelKeys.length) {
+                    Prefs.setOfflineModel(MainActivity.this, modelKeys[position]);
+                    // 切模型时给默认下载地址，用户可自行修改
+                    editModelUrl.setText(Prefs.modelDefaultUrl(modelKeys[position]));
+                    updateModelStatus();
                 }
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
             }
         });
 

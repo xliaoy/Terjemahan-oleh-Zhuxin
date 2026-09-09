@@ -11,6 +11,9 @@
     <string name="home_tap_hint_on">点击窗口翻译，长按窗口移动，长按右下角调整大小</string>
     <string name="home_tap_hint_off">点击开启悬浮翻译，对准内容即可翻译</string>
 
+    <!-- 首页：引擎 -->
+    <string name="section_engines">识别与翻译引擎</string>
+
     <!-- 首页：翻译语言 -->
     <string name="section_languages">翻译语言设置</string>
     <string name="lang_source">源语言（原文语言）</string>
@@ -55,8 +58,23 @@
     <string name="ai_api_key_hint">API Key</string>
     <string name="btn_refresh_models">刷新模型</string>
 
-    <!-- 设置：离线翻译 -->
-    <string name="section_offline">离线翻译设置</string>
+    <!-- 设置：OCR 引擎 -->
+    <string name="section_ocr">OCR 识别引擎</string>
+    <string name="ocr_engine_mlkit">本地 ML Kit OCR（离线）</string>
+    <string name="ocr_engine_ai_vision">AI 视觉在线 OCR</string>
+    <string name="ocr_engine_hint">本地 ML Kit 免费离线（拉丁/中日韩/印地文）；AI 视觉可识别任意文字，需模型支持图片输入</string>
+
+    <!-- 设置：翻译引擎 -->
+    <string name="section_translate_engine">翻译引擎</string>
+    <string name="te_ai">在线 AI（OpenAI 兼容接口）</string>
+    <string name="te_offline">离线本地模型（GGUF）</string>
+    <string name="te_google">Google 免费翻译（在线）</string>
+
+    <!-- 设置：离线模型 -->
+    <string name="section_offline">离线模型</string>
+    <string name="offline_model_label">选择离线模型</string>
+    <string name="model_hunyuan">腾讯混元 HY-MT1.5-1.8B（中英日韩）</string>
+    <string name="model_qwen">Qwen2.5-1.5B-Instruct（29 种语言）</string>
     <string name="switch_offline_text">使用离线翻译（本地模型，无需联网）</string>
     <string name="model_url_hint">模型下载地址（约 1GB）</string>
     <string name="btn_download_model">下载离线模型</string>

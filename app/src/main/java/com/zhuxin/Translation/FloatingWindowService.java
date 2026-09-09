@@ -260,11 +260,11 @@ public class FloatingWindowService extends Service {
             return;
         }
 
-        final boolean offline = Prefs.offlineMode(this);
+        final String engine = Prefs.translateEngine(this);
         final String baseUrl = Prefs.baseUrl(this);
         final String apiKey = Prefs.apiKey(this);
         final String model = Prefs.model(this);
-        if (!offline && (apiKey.isEmpty() || model.isEmpty())) {
+        if (Prefs.TE_AI.equals(engine) && (apiKey.isEmpty() || model.isEmpty())) {
             show(getString(R.string.msg_need_ai_config));
             return;
         }
@@ -290,7 +290,7 @@ public class FloatingWindowService extends Service {
                                     show(getString(R.string.msg_capture_failed));
                                     return;
                                 }
-                                handleCaptured(bitmap, offline, baseUrl, apiKey, model);
+                                handleCaptured(bitmap, engine, baseUrl, apiKey, model);
                             }
                         });
                     }
@@ -299,9 +299,9 @@ public class FloatingWindowService extends Service {
         }, 150);
     }
 
-    private void handleCaptured(final Bitmap bitmap, final boolean offline,
+    private void handleCaptured(final Bitmap bitmap, final String engine,
                                 final String baseUrl, final String apiKey, final String model) {
-        ocrHelper.recognize(bitmap, new OcrHelper.Callback() {
+        OcrHelper.Callback ocrCb = new OcrHelper.Callback() {
             @Override
             public void onResult(final String text) {
                 if (text == null || text.trim().isEmpty()) {
@@ -331,8 +331,27 @@ public class FloatingWindowService extends Service {
                 bitmap.recycle();
                 final String sourceLang = Prefs.sourceLang(FloatingWindowService.this);
                 final String targetLang = Prefs.targetLang(FloatingWindowService.this);
-                if (offline) {
+                if (Prefs.TE_OFFLINE.equals(engine)) {
                     translateOffline(text, sourceLang, targetLang);
+                } else if (Prefs.TE_GOOGLE.equals(engine)) {
+                    GoogleTranslate.translate(text, sourceLang, targetLang,
+                            new GoogleTranslate.Callback() {
+                                @Override
+                                public void onResult(String result, String error) {
+                                    if (error != null) {
+                                        DebugLog.error(FloatingWindowService.this, "Google",
+                                                "翻译失败: " + error, null);
+                                        show(getString(R.string.msg_translate_failed, error));
+                                    } else if (result == null || result.isEmpty()) {
+                                        DebugLog.error(FloatingWindowService.this, "Google",
+                                                "翻译结果为空", null);
+                                        show(getString(R.string.msg_translate_empty));
+                                    } else {
+                                        Prefs.addHistory(FloatingWindowService.this, text, result);
+                                        show(result);
+                                    }
+                                }
+                            });
                 } else {
                     new AiClient(baseUrl, apiKey, model).translate(
                             text, sourceLang, targetLang,
@@ -355,7 +374,12 @@ public class FloatingWindowService extends Service {
                             });
                 }
             }
-        });
+        };
+        if (Prefs.OCR_AI_VISION.equals(Prefs.ocrEngine(FloatingWindowService.this))) {
+            OcrHelper.recognizeOnline(FloatingWindowService.this, bitmap, ocrCb);
+        } else {
+            ocrHelper.recognize(bitmap, ocrCb);
+        }
     }
 
     /** 是否含外文（拉丁、假名、谚文、西里尔、泰文、阿拉伯文、天城文等书写系统），用于判断是否需要翻译。 */

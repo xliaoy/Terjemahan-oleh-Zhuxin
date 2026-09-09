@@ -105,6 +105,26 @@ public final class OcrHelper {
         }
     }
 
+    /**
+     * AI 视觉在线 OCR：把截图交给配置的 OpenAI 兼容视觉模型提取文字（需模型支持图片输入）。
+     */
+    public static void recognizeOnline(android.content.Context c, Bitmap bitmap, final Callback cb) {
+        String baseUrl = Prefs.baseUrl(c);
+        String apiKey = Prefs.apiKey(c);
+        String model = Prefs.model(c);
+        new AiClient(baseUrl, apiKey, model).extractText(bitmap, new AiClient.TextCallback() {
+            @Override
+            public void onResult(String text, String error) {
+                if (error != null) {
+                    DebugLog.error(c, "OCR", "AI 视觉 OCR 失败: " + error, null);
+                    cb.onResult(null);
+                } else {
+                    cb.onResult(text);
+                }
+            }
+        });
+    }
+
     public void close() {
         for (TextRecognizer r : recognizers) {
             if (r != null) {

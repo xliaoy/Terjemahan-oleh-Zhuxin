@@ -11,6 +11,9 @@
     <string name="home_tap_hint_on">Tap the window to translate, long-press to move, long-press the corner to resize</string>
     <string name="home_tap_hint_off">Turn it on, then aim the area at any text to translate</string>
 
+    <!-- Home: engines -->
+    <string name="section_engines">OCR &amp; translation engines</string>
+
     <!-- Home: languages -->
     <string name="section_languages">Translation languages</string>
     <string name="lang_source">Source language (original)</string>
@@ -55,8 +58,23 @@
     <string name="ai_api_key_hint">API Key</string>
     <string name="btn_refresh_models">Refresh models</string>
 
-    <!-- Settings: offline -->
-    <string name="section_offline">Offline translation</string>
+    <!-- Settings: OCR engine -->
+    <string name="section_ocr">OCR engine</string>
+    <string name="ocr_engine_mlkit">On-device ML Kit OCR</string>
+    <string name="ocr_engine_ai_vision">AI vision OCR (online)</string>
+    <string name="ocr_engine_hint">ML Kit is free &amp; offline (Latin/Chinese/Japanese/Korean/Devanagari); AI vision reads any script but the model must support images.</string>
+
+    <!-- Settings: translation engine -->
+    <string name="section_translate_engine">Translation engine</string>
+    <string name="te_ai">Online AI (OpenAI-compatible)</string>
+    <string name="te_offline">On-device model (GGUF)</string>
+    <string name="te_google">Google free translation (online)</string>
+
+    <!-- Settings: offline model -->
+    <string name="section_offline">Offline model</string>
+    <string name="offline_model_label">Choose an offline model</string>
+    <string name="model_hunyuan">Tencent Hunyuan HY-MT1.5-1.8B (zh/en/ja/ko)</string>
+    <string name="model_qwen">Qwen2.5-1.5B-Instruct (29 languages)</string>
     <string name="switch_offline_text">Use offline translation (local model, no network)</string>
     <string name="model_url_hint">Model download URL (~1GB)</string>
     <string name="btn_download_model">Download offline model</string>

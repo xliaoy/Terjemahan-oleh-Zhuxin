@@ -1,10 +1,13 @@
 package com.zhuxin.Translation;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,7 +158,93 @@ public final class AiClient {
         }
     }
 
-    /** 根据源/目标语言（可含“自动检测”）构造翻译指令。 */
+    /**
+     * AI 视觉 OCR：把图片传给支持视觉输入的模型，提取图中所有文字原文。
+     * 依赖所配置的模型支持图片（如 gpt-4o / qwen-vl 等）。
+     */
+    public void extractText(final Bitmap bitmap, final TextCallback cb) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            cb.onResult(null, "图片无效");
+            return;
+        }
+        try {
+            // 缩放并压缩图片，减少请求体积
+            Bitmap working = bitmap;
+            int maxDim = 1280;
+            int w = bitmap.getWidth();
+            int h = bitmap.getHeight();
+            if (Math.max(w, h) > maxDim) {
+                float scale = maxDim / (float) Math.max(w, h);
+                working = Bitmap.createScaledBitmap(bitmap,
+                        Math.round(w * scale), Math.round(h * scale), true);
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            working.compress(Bitmap.CompressFormat.JPEG, 85, baos);
+            if (working != bitmap) {
+                working.recycle();
+            }
+            String b64 = Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+
+            JSONObject body = new JSONObject();
+            body.put("model", model);
+            JSONArray messages = new JSONArray();
+            messages.put(new JSONObject()
+                    .put("role", "system")
+                    .put("content", "你是 OCR 文字识别引擎。只输出图片中的所有文字原文，保留换行与原有语序，不要翻译、不要解释、不要添加任何其他内容。"));
+            JSONArray content = new JSONArray();
+            content.put(new JSONObject()
+                    .put("type", "text")
+                    .put("text", "识别这张图片中的所有文字，逐行输出原文。"));
+            content.put(new JSONObject()
+                    .put("type", "image_url")
+                    .put("image_url", new JSONObject()
+                            .put("url", "data:image/jpeg;base64," + b64)));
+            messages.put(new JSONObject()
+                    .put("role", "user")
+                    .put("content", content));
+            body.put("messages", messages);
+            body.put("temperature", 0.1);
+
+            Request req = auth(baseUrl + "/chat/completions")
+                    .post(RequestBody.create(body.toString(), JSON))
+                    .build();
+
+            client.newCall(req).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    cb.onResult(null, e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) {
+                    try (Response r = response) {
+                        String resp = r.body() != null ? r.body().string() : "";
+                        if (!r.isSuccessful()) {
+                            cb.onResult(null, "HTTP " + r.code() + " " + resp);
+                            return;
+                        }
+                        JSONObject root = new JSONObject(resp);
+                        JSONArray choices = root.optJSONArray("choices");
+                        if (choices != null && choices.length() > 0) {
+                            String content = choices.optJSONObject(0)
+                                    .optJSONObject("message")
+                                    .optString("content", "");
+                            cb.onResult(content.trim(), null);
+                        } else {
+                            cb.onResult(null, "接口未返回识别结果");
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "extractText error", e);
+                        cb.onResult(null, e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            cb.onResult(null, e.getMessage());
+        }
+    }
+
+    /** 根据源/目标语言（可含"自动检测"）构造翻译指令。 */
     private String buildInstruction(String text, String source, String target) {
         boolean autoSource = LangUtil.AUTO.equals(source);
         boolean autoTarget = LangUtil.AUTO.equals(target);
