@@ -57,6 +57,9 @@
     <string name="ai_base_url_hint">Base URL</string>
     <string name="ai_api_key_hint">API Key</string>
     <string name="btn_refresh_models">Refresh models</string>
+    <string name="btn_refresh_vision_models">Refresh vision models</string>
+    <string name="toast_vision_not_configured">Please configure the AI vision OCR Base URL, API Key and model in Settings first</string>
+    <string name="toast_ai_not_configured">Please configure the online AI translation API Key and model in Settings first</string>
     <string name="section_ai_vision">AI vision OCR (independent setup)</string>
     <string name="ai_vision_base_url_hint">Vision OCR Base URL (empty = use above)</string>
     <string name="ai_vision_api_key_hint">Vision OCR API Key (empty = use above)</string>

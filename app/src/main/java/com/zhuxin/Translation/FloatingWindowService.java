@@ -44,6 +44,40 @@ public class FloatingWindowService extends Service {
 
     private static FloatingWindowService instance;
 
+    /** 服务运行状态监听（供主界面同步开关状态）。 */
+    public interface StateListener {
+        void onStateChanged(boolean running);
+    }
+
+    private static final java.util.List<StateListener> stateListeners = new java.util.ArrayList<>();
+
+    public static void addStateListener(StateListener l) {
+        if (l != null) {
+            synchronized (stateListeners) {
+                stateListeners.add(l);
+            }
+        }
+    }
+
+    public static void removeStateListener(StateListener l) {
+        synchronized (stateListeners) {
+            stateListeners.remove(l);
+        }
+    }
+
+    private static void notifyState(boolean running) {
+        synchronized (stateListeners) {
+            for (StateListener l : stateListeners) {
+                if (l != null) {
+                    try {
+                        l.onStateChanged(running);
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+    }
+
     private WindowManager wm;
     private View container;
     private TextView textView;
@@ -76,6 +110,7 @@ public class FloatingWindowService extends Service {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        notifyState(true);
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         Notification notif = buildNotification();
         if (Build.VERSION.SDK_INT >= 34) {
@@ -591,6 +626,7 @@ public class FloatingWindowService extends Service {
         }
         ocrHelper.close();
         instance = null;
+        notifyState(false);
         super.onDestroy();
     }
 }

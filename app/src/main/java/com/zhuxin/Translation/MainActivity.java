@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText editModelUrl;
     private EditText editVisionBaseUrl;
     private EditText editVisionApiKey;
-    private EditText editVisionModel;
+    private Spinner spinnerVisionModel;
+    private Button btnRefreshVisionModels;
     private Spinner spinnerModel;
     private Spinner spinnerOcrEngine;
     private Spinner spinnerTranslateEngine;
@@ -80,8 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
     private final List<String> models = new ArrayList<>();
     private ArrayAdapter<String> modelAdapter;
+    private final List<String> visionModels = new ArrayList<>();
+    private ArrayAdapter<String> visionModelAdapter;
 
     private boolean initModel = true;
+    private boolean initVisionModel = true;
     private boolean initLang = true;
     private boolean initSourceLang = true;
     private boolean initAppLang = true;
@@ -110,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         uiUpdating = true;
                         switchFloating.setChecked(false);
                         uiUpdating = false;
+                        pendingStartFloating = true; // 授权返回后自动继续开启
                         requestOverlayPermission();
                     } else {
                         startFloating();
@@ -139,6 +144,29 @@ public class MainActivity extends AppCompatActivity {
         setupAppLanguage();
         updatePermissionStatus();
         updateFloatingUI();
+        // 注册悬浮窗服务状态监听：开关状态始终跟随服务真实运行状态
+        FloatingWindowService.addStateListener(stateListener);
+    }
+
+    /** 悬浮窗服务运行状态监听：同步首页开关与权限状态。 */
+    private final FloatingWindowService.StateListener stateListener =
+            new FloatingWindowService.StateListener() {
+                @Override
+                public void onStateChanged(boolean running) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateFloatingUI();
+                            updatePermissionStatus();
+                        }
+                    });
+                }
+            };
+
+    @Override
+    protected void onDestroy() {
+        FloatingWindowService.removeStateListener(stateListener);
+        super.onDestroy();
     }
 
     /** 首页：OCR 引擎与翻译引擎选择。 */
@@ -163,9 +191,21 @@ public class MainActivity extends AppCompatActivity {
         spinnerOcrEngine.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0 && position < ocrKeys.length) {
-                    Prefs.setOcrEngine(MainActivity.this, ocrKeys[position]);
+                if (uiUpdating || position < 0 || position >= ocrKeys.length) {
+                    return;
                 }
+                // AI 视觉 OCR 必须先在设置里配好独立的 Base URL / API Key / 模型
+                if (Prefs.OCR_AI_VISION.equals(ocrKeys[position])
+                        && !Prefs.isVisionConfigured(MainActivity.this)) {
+                    Toast.makeText(MainActivity.this, R.string.toast_vision_not_configured,
+                            Toast.LENGTH_LONG).show();
+                    uiUpdating = true;
+                    spinnerOcrEngine.setSelection(0);
+                    uiUpdating = false;
+                    Prefs.setOcrEngine(MainActivity.this, Prefs.OCR_MLKIT);
+                    return;
+                }
+                Prefs.setOcrEngine(MainActivity.this, ocrKeys[position]);
             }
 
             @Override
@@ -194,13 +234,32 @@ public class MainActivity extends AppCompatActivity {
         spinnerTranslateEngine.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0 && position < teKeys.length) {
-                    Prefs.setTranslateEngine(MainActivity.this, teKeys[position]);
-                    if (Prefs.TE_OFFLINE.equals(teKeys[position])
-                            && !LocalTranslator.isModelValid(MainActivity.this)) {
-                        Toast.makeText(MainActivity.this, R.string.toast_model_not_downloaded_first,
-                                Toast.LENGTH_LONG).show();
+                if (uiUpdating || position < 0 || position >= teKeys.length) {
+                    return;
+                }
+                // 在线 AI 翻译必须先配置 API Key 与模型
+                if (Prefs.TE_AI.equals(teKeys[position])
+                        && !Prefs.isAiConfigured(MainActivity.this)) {
+                    Toast.makeText(MainActivity.this, R.string.toast_ai_not_configured,
+                            Toast.LENGTH_LONG).show();
+                    String saved = Prefs.translateEngine(MainActivity.this);
+                    int back = 0;
+                    for (int i = 0; i < teKeys.length; i++) {
+                        if (teKeys[i].equals(saved)) {
+                            back = i;
+                            break;
+                        }
                     }
+                    uiUpdating = true;
+                    spinnerTranslateEngine.setSelection(back);
+                    uiUpdating = false;
+                    return;
+                }
+                Prefs.setTranslateEngine(MainActivity.this, teKeys[position]);
+                if (Prefs.TE_OFFLINE.equals(teKeys[position])
+                        && !LocalTranslator.isModelValid(MainActivity.this)) {
+                    Toast.makeText(MainActivity.this, R.string.toast_model_not_downloaded_first,
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -247,7 +306,8 @@ public class MainActivity extends AppCompatActivity {
         editApiKey = findViewById(R.id.edit_api_key);
         editVisionBaseUrl = findViewById(R.id.edit_vision_base_url);
         editVisionApiKey = findViewById(R.id.edit_vision_api_key);
-        editVisionModel = findViewById(R.id.edit_vision_model);
+        spinnerVisionModel = findViewById(R.id.spinner_vision_model);
+        btnRefreshVisionModels = findViewById(R.id.btn_refresh_vision_models);
         spinnerModel = findViewById(R.id.spinner_model);
         spinnerSourceLang = findViewById(R.id.spinner_source_lang);
         spinnerTargetLang = findViewById(R.id.spinner_target_lang);
@@ -321,10 +381,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // AI 视觉 OCR 独立配置（留空回退到上方主配置）
+        // AI 视觉 OCR 独立配置（必须独立填写，不共用主 AI 配置）
         editVisionBaseUrl.setText(Prefs.visionBaseUrl(this));
         editVisionApiKey.setText(Prefs.visionApiKey(this));
-        editVisionModel.setText(Prefs.visionModel(this));
         editVisionBaseUrl.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
             @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
@@ -339,13 +398,34 @@ public class MainActivity extends AppCompatActivity {
                 Prefs.setVisionApiKey(MainActivity.this, s.toString());
             }
         });
-        editVisionModel.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
-            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
-            @Override public void afterTextChanged(Editable s) {
-                Prefs.setVisionModel(MainActivity.this, s.toString());
+
+        // 视觉 OCR 模型：在线获取下拉选择
+        visionModelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, visionModels);
+        visionModelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerVisionModel.setAdapter(visionModelAdapter);
+        String savedVisionModel = Prefs.visionModel(this);
+        if (!savedVisionModel.isEmpty()) {
+            visionModels.add(savedVisionModel);
+            visionModelAdapter.notifyDataSetChanged();
+            spinnerVisionModel.setSelection(0);
+        }
+        spinnerVisionModel.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+                if (initVisionModel) {
+                    initVisionModel = false;
+                    return;
+                }
+                if (position >= 0 && position < visionModels.size()) {
+                    Prefs.setVisionModel(MainActivity.this, visionModels.get(position));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
             }
         });
+        btnRefreshVisionModels.setOnClickListener(v -> refreshVisionModels());
 
         modelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, models);
         modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -713,6 +793,55 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /** 刷新 AI 视觉 OCR 的模型列表（使用视觉 OCR 自己的接口配置）。 */
+    private void refreshVisionModels() {
+        String base = editVisionBaseUrl.getText().toString().trim();
+        if (base.isEmpty()) {
+            base = Prefs.baseUrl(this);
+        }
+        String key = editVisionApiKey.getText().toString().trim();
+        if (key.isEmpty()) {
+            key = Prefs.apiKey(this);
+        }
+        if (key.isEmpty()) {
+            Toast.makeText(this, R.string.toast_fill_api_key, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        btnRefreshVisionModels.setEnabled(false);
+        new AiClient(base, key, "").fetchModels(new AiClient.ListCallback() {
+            @Override
+            public void onResult(final List<String> list, final String error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        btnRefreshVisionModels.setEnabled(true);
+                        if (error != null) {
+                            Toast.makeText(MainActivity.this,
+                                    getString(R.string.toast_model_get_failed, error),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        visionModels.clear();
+                        if (list != null) {
+                            visionModels.addAll(list);
+                        }
+                        visionModelAdapter.notifyDataSetChanged();
+                        if (!visionModels.isEmpty()) {
+                            String saved = Prefs.visionModel(MainActivity.this);
+                            int i = visionModels.indexOf(saved);
+                            int select = i >= 0 ? i : 0;
+                            spinnerVisionModel.setSelection(select);
+                            Prefs.setVisionModel(MainActivity.this, visionModels.get(select));
+                        }
+                        Toast.makeText(MainActivity.this,
+                                getString(R.string.toast_model_get_ok, visionModels.size()),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
     private void startFloating() {
         if (!ScreenCaptureService.isReady()) {
             pendingStartFloating = true;
@@ -758,6 +887,12 @@ public class MainActivity extends AppCompatActivity {
             pendingStartFloating = false;
             updateFloatingUI();
             Toast.makeText(this, R.string.toast_screen_denied, Toast.LENGTH_LONG).show();
+        } else if (requestCode == REQ_OVERLAY) {
+            // 悬浮窗权限授权返回：若用户之前想开启，自动继续
+            if (pendingStartFloating && Settings.canDrawOverlays(this)) {
+                pendingStartFloating = false;
+                startFloating();
+            }
         }
         updatePermissionStatus();
     }

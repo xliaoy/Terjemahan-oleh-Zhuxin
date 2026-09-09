@@ -116,6 +116,16 @@ public final class Prefs {
         sp(c).edit().putString(KEY_VISION_MODEL, v == null ? "" : v).apply();
     }
 
+    /** AI 视觉 OCR 是否已完整配置：Base URL / API Key / 模型三项都必须填写（不依赖主 AI 配置）。 */
+    public static boolean isVisionConfigured(Context c) {
+        return !visionBaseUrl(c).isEmpty() && !visionApiKey(c).isEmpty() && !visionModel(c).isEmpty();
+    }
+
+    /** 在线 AI 翻译是否已配置：API Key 与模型必须填写（Base URL 有默认值兜底）。 */
+    public static boolean isAiConfigured(Context c) {
+        return !apiKey(c).isEmpty() && !model(c).isEmpty();
+    }
+
     // ---------- 翻译引擎 ----------
 
     /** 翻译引擎：ai / offline / google。兼容旧版"使用离线翻译"开关。 */
