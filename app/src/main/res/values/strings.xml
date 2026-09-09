@@ -58,12 +58,13 @@
     <string name="ai_api_key_hint">API Key</string>
     <string name="btn_refresh_models">刷新模型</string>
     <string name="btn_refresh_vision_models">刷新视觉模型</string>
+    <string name="toast_vision_need_base_key">请先填写 AI 视觉 OCR 的 Base URL 与 API Key</string>
     <string name="toast_vision_not_configured">请先在设置中填写 AI 视觉 OCR 的 Base URL、API Key 与模型，再切换到 AI 视觉 OCR</string>
     <string name="toast_ai_not_configured">请先在设置中填写在线 AI 翻译的 API Key 与模型</string>
-    <string name="section_ai_vision">AI 视觉 OCR 设置（可独立配置）</string>
-    <string name="ai_vision_base_url_hint">视觉 OCR Base URL（留空用上方）</string>
-    <string name="ai_vision_api_key_hint">视觉 OCR API Key（留空用上方）</string>
-    <string name="ai_vision_model_hint">视觉 OCR 模型（留空用上方，需支持图片）</string>
+    <string name="section_ai_vision">AI 视觉 OCR 设置</string>
+    <string name="ai_vision_base_url_hint">视觉 OCR Base URL</string>
+    <string name="ai_vision_api_key_hint">视觉 OCR API Key</string>
+    <string name="ai_vision_model_hint">视觉 OCR 模型（需支持图片）</string>
 
     <!-- 设置：OCR 引擎 -->
     <string name="section_ocr">OCR 识别引擎</string>

@@ -793,18 +793,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /** 刷新 AI 视觉 OCR 的模型列表（使用视觉 OCR 自己的接口配置）。 */
+    /** 刷新 AI 视觉 OCR 的模型列表（必须使用视觉 OCR 自己的 Base URL / API Key）。 */
     private void refreshVisionModels() {
         String base = editVisionBaseUrl.getText().toString().trim();
-        if (base.isEmpty()) {
-            base = Prefs.baseUrl(this);
-        }
         String key = editVisionApiKey.getText().toString().trim();
-        if (key.isEmpty()) {
-            key = Prefs.apiKey(this);
-        }
-        if (key.isEmpty()) {
-            Toast.makeText(this, R.string.toast_fill_api_key, Toast.LENGTH_SHORT).show();
+        if (base.isEmpty() || key.isEmpty()) {
+            Toast.makeText(this, R.string.toast_vision_need_base_key, Toast.LENGTH_LONG).show();
             return;
         }
         btnRefreshVisionModels.setEnabled(false);
