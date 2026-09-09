@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText editBaseUrl;
     private EditText editApiKey;
     private EditText editModelUrl;
+    private EditText editVisionBaseUrl;
+    private EditText editVisionApiKey;
+    private EditText editVisionModel;
     private Spinner spinnerModel;
     private Spinner spinnerOcrEngine;
     private Spinner spinnerTranslateEngine;
@@ -242,6 +245,9 @@ public class MainActivity extends AppCompatActivity {
         pageSettings = findViewById(R.id.page_settings_include);
         editBaseUrl = findViewById(R.id.edit_base_url);
         editApiKey = findViewById(R.id.edit_api_key);
+        editVisionBaseUrl = findViewById(R.id.edit_vision_base_url);
+        editVisionApiKey = findViewById(R.id.edit_vision_api_key);
+        editVisionModel = findViewById(R.id.edit_vision_model);
         spinnerModel = findViewById(R.id.spinner_model);
         spinnerSourceLang = findViewById(R.id.spinner_source_lang);
         spinnerTargetLang = findViewById(R.id.spinner_target_lang);
@@ -312,6 +318,32 @@ public class MainActivity extends AppCompatActivity {
             @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
             @Override public void afterTextChanged(Editable s) {
                 Prefs.setApiKey(MainActivity.this, s.toString());
+            }
+        });
+
+        // AI 视觉 OCR 独立配置（留空回退到上方主配置）
+        editVisionBaseUrl.setText(Prefs.visionBaseUrl(this));
+        editVisionApiKey.setText(Prefs.visionApiKey(this));
+        editVisionModel.setText(Prefs.visionModel(this));
+        editVisionBaseUrl.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void afterTextChanged(Editable s) {
+                Prefs.setVisionBaseUrl(MainActivity.this, s.toString());
+            }
+        });
+        editVisionApiKey.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void afterTextChanged(Editable s) {
+                Prefs.setVisionApiKey(MainActivity.this, s.toString());
+            }
+        });
+        editVisionModel.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void afterTextChanged(Editable s) {
+                Prefs.setVisionModel(MainActivity.this, s.toString());
             }
         });
 

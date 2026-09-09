@@ -34,6 +34,9 @@ public final class Prefs {
     private static final String KEY_OCR_ENGINE = "ocr_engine";
     private static final String KEY_TRANSLATE_ENGINE = "translate_engine";
     private static final String KEY_OFFLINE_MODEL = "offline_model";
+    private static final String KEY_VISION_BASE_URL = "vision_base_url";
+    private static final String KEY_VISION_API_KEY = "vision_api_key";
+    private static final String KEY_VISION_MODEL = "vision_model";
 
     private static final int MAX_HISTORY = 50;
 
@@ -82,6 +85,35 @@ public final class Prefs {
 
     public static void setOcrEngine(Context c, String v) {
         sp(c).edit().putString(KEY_OCR_ENGINE, v == null ? OCR_MLKIT : v).apply();
+    }
+
+    // ---------- AI 视觉 OCR 配置（留空时回退到主 AI 配置）----------
+
+    public static String visionBaseUrl(Context c) {
+        String v = sp(c).getString(KEY_VISION_BASE_URL, "");
+        return v == null ? "" : v;
+    }
+
+    public static void setVisionBaseUrl(Context c, String v) {
+        sp(c).edit().putString(KEY_VISION_BASE_URL, v == null ? "" : v).apply();
+    }
+
+    public static String visionApiKey(Context c) {
+        String v = sp(c).getString(KEY_VISION_API_KEY, "");
+        return v == null ? "" : v;
+    }
+
+    public static void setVisionApiKey(Context c, String v) {
+        sp(c).edit().putString(KEY_VISION_API_KEY, v == null ? "" : v).apply();
+    }
+
+    public static String visionModel(Context c) {
+        String v = sp(c).getString(KEY_VISION_MODEL, "");
+        return v == null ? "" : v;
+    }
+
+    public static void setVisionModel(Context c, String v) {
+        sp(c).edit().putString(KEY_VISION_MODEL, v == null ? "" : v).apply();
     }
 
     // ---------- 翻译引擎 ----------

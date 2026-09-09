@@ -73,6 +73,55 @@
                 android:text="@string/btn_refresh_models" />
         </LinearLayout>
 
+        <!-- AI 视觉 OCR 设置（可独立配置接口） -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/section_ai_vision"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/ai_vision_base_url_hint">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_vision_base_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/ai_vision_api_key_hint"
+            app:passwordToggleEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_vision_api_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/ai_vision_model_hint">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_vision_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- 离线模型设置 -->
         <TextView
             android:layout_width="wrap_content"

@@ -107,11 +107,21 @@ public final class OcrHelper {
 
     /**
      * AI 视觉在线 OCR：把截图交给配置的 OpenAI 兼容视觉模型提取文字（需模型支持图片输入）。
+     * 优先使用独立的视觉 OCR 配置（Base URL / API Key / 模型），留空时回退到主 AI 配置。
      */
     public static void recognizeOnline(android.content.Context c, Bitmap bitmap, final Callback cb) {
-        String baseUrl = Prefs.baseUrl(c);
-        String apiKey = Prefs.apiKey(c);
-        String model = Prefs.model(c);
+        String baseUrl = Prefs.visionBaseUrl(c);
+        if (baseUrl.isEmpty()) {
+            baseUrl = Prefs.baseUrl(c);
+        }
+        String apiKey = Prefs.visionApiKey(c);
+        if (apiKey.isEmpty()) {
+            apiKey = Prefs.apiKey(c);
+        }
+        String model = Prefs.visionModel(c);
+        if (model.isEmpty()) {
+            model = Prefs.model(c);
+        }
         new AiClient(baseUrl, apiKey, model).extractText(bitmap, new AiClient.TextCallback() {
             @Override
             public void onResult(String text, String error) {

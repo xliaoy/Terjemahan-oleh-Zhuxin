@@ -57,6 +57,10 @@
     <string name="ai_base_url_hint">Base URL</string>
     <string name="ai_api_key_hint">API Key</string>
     <string name="btn_refresh_models">Refresh models</string>
+    <string name="section_ai_vision">AI vision OCR (independent setup)</string>
+    <string name="ai_vision_base_url_hint">Vision OCR Base URL (empty = use above)</string>
+    <string name="ai_vision_api_key_hint">Vision OCR API Key (empty = use above)</string>
+    <string name="ai_vision_model_hint">Vision OCR model (empty = use above; must support images)</string>
 
     <!-- Settings: OCR engine -->
     <string name="section_ocr">OCR engine</string>
