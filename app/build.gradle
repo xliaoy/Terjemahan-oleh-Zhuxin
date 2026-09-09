@@ -44,6 +44,10 @@ dependencies {
     implementation 'com.google.mlkit:text-recognition:16.0.0'
     // ML Kit 日文识别器（识别日文假名与汉字，离线可用）
     implementation 'com.google.mlkit:text-recognition-japanese:16.0.0'
+    // ML Kit 韩文识别器（识别谚文，离线可用）
+    implementation 'com.google.mlkit:text-recognition-korean:16.0.0'
+    // ML Kit 天城文识别器（识别印地文等，离线可用）
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
 
     // HTTP 客户端（调用 OpenAI 兼容接口）
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'

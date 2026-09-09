@@ -42,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_SCREEN = 2;
 
     private static final String[] LANG_KEYS = {
-            "自动检测", "简体中文", "英文", "日文", "韩文", "法文", "德文", "西班牙文", "俄文"
+            "自动检测", "简体中文", "英文", "日文", "韩文", "法文", "德文", "西班牙文", "俄文",
+            "葡萄牙文", "意大利文", "泰文", "越南文", "印尼文", "马来文", "阿拉伯文",
+            "印地文", "土耳其文", "波兰文", "荷兰文"
     };
 
     private MaterialSwitch switchFloating;

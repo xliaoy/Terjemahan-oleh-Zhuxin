@@ -358,22 +358,9 @@ public class FloatingWindowService extends Service {
         });
     }
 
-    /** 是否含外文（拉丁字母、日文假名、韩文谚文、西里尔字母等），用于判断是否需要翻译。 */
+    /** 是否含外文（拉丁、假名、谚文、西里尔、泰文、阿拉伯文、天城文等书写系统），用于判断是否需要翻译。 */
     private boolean containsForeign(String text) {
-        if (text == null) {
-            return false;
-        }
-        for (int i = 0; i < text.length(); i++) {
-            Character.UnicodeScript sc = Character.UnicodeScript.of(text.charAt(i));
-            if (sc == Character.UnicodeScript.LATIN
-                    || sc == Character.UnicodeScript.HIRAGANA
-                    || sc == Character.UnicodeScript.KATAKANA
-                    || sc == Character.UnicodeScript.HANGUL
-                    || sc == Character.UnicodeScript.CYRILLIC) {
-                return true;
-            }
-        }
-        return false;
+        return LangUtil.containsForeignScript(text);
     }
 
     /** 本地离线翻译：后台线程加载模型并推理。 */

@@ -25,6 +25,17 @@
         <item>German</item>
         <item>Spanish</item>
         <item>Russian</item>
+        <item>Portuguese</item>
+        <item>Italian</item>
+        <item>Thai</item>
+        <item>Vietnamese</item>
+        <item>Indonesian</item>
+        <item>Malay</item>
+        <item>Arabic</item>
+        <item>Hindi</item>
+        <item>Turkish</item>
+        <item>Polish</item>
+        <item>Dutch</item>
     </string-array>
 
     <!-- Home: permissions -->

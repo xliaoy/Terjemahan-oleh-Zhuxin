@@ -25,6 +25,17 @@
         <item>德文</item>
         <item>西班牙文</item>
         <item>俄文</item>
+        <item>葡萄牙文</item>
+        <item>意大利文</item>
+        <item>泰文</item>
+        <item>越南文</item>
+        <item>印尼文</item>
+        <item>马来文</item>
+        <item>阿拉伯文</item>
+        <item>印地文</item>
+        <item>土耳其文</item>
+        <item>波兰文</item>
+        <item>荷兰文</item>
     </string-array>
 
     <!-- 首页：权限 -->

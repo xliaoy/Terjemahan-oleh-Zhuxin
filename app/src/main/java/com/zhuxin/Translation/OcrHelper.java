@@ -6,13 +6,15 @@ import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
+import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions;
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions;
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 /**
  * 基于 ML Kit 的本地文字识别，离线可用。
- * 同时持有拉丁语系识别器（英文、法文、德文等）与日文识别器（假名 + 汉字），
- * 并行识别后取识别结果更完整的一方，从而同时支持英文与日文。
+ * 同时持有拉丁语系（英文、法文、德文等）、日文（假名 + 汉字）、韩文（谚文）与
+ * 天城文（印地文等）四类识别器，并行识别后取识别结果更完整的一方。
  */
 public final class OcrHelper {
 
@@ -20,7 +22,7 @@ public final class OcrHelper {
         void onResult(String text);
     }
 
-    private static final int NUM_RECOGNIZERS = 2;
+    private static final int NUM_RECOGNIZERS = 4;
 
     private final TextRecognizer[] recognizers = new TextRecognizer[NUM_RECOGNIZERS];
 
@@ -29,6 +31,10 @@ public final class OcrHelper {
                 new TextRecognizerOptions.Builder().build()); // 拉丁语系
         recognizers[1] = TextRecognition.getClient(
                 new JapaneseTextRecognizerOptions.Builder().build()); // 日文
+        recognizers[2] = TextRecognition.getClient(
+                new KoreanTextRecognizerOptions.Builder().build()); // 韩文
+        recognizers[3] = TextRecognition.getClient(
+                new DevanagariTextRecognizerOptions.Builder().build()); // 印地文等天城文
     }
 
     public void recognize(Bitmap bitmap, final Callback cb) {
@@ -63,7 +69,7 @@ public final class OcrHelper {
                         return;
                     }
                 }
-                // 两个识别器都完成：取结果更完整（更长）的一个
+                // 所有识别器都完成：取结果更完整（更长）的一个
                 String best = "";
                 for (String r : results) {
                     if (r != null && r.length() > best.length()) {
