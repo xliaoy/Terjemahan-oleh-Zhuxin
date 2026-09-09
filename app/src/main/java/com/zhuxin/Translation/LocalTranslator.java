@@ -125,7 +125,8 @@ public final class LocalTranslator {
         if (!LangUtil.AUTO.equals(source)) {
             return LangUtil.ZH.equals(source) ? "英语" : LangUtil.ZH;
         }
-        return LangUtil.containsCjk(text) ? "英语" : LangUtil.ZH;
+        // 源/目标均自动检测：含日文假名/韩文谚文 → 翻成中文；否则视为中文 → 翻成英语
+        return LangUtil.containsJapaneseOrKorean(text) ? LangUtil.ZH : "英语";
     }
 
     private static native boolean nativeInit(String libDir);

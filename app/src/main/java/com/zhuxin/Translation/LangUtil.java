@@ -12,7 +12,7 @@ public final class LangUtil {
     private LangUtil() {
     }
 
-    /** 是否含中日韩字符（用于“自动检测”时的方向判断）。 */
+    /** 是否含中日韩字符（用于"自动检测"时的方向判断）。 */
     public static boolean containsCjk(String s) {
         if (s == null) {
             return false;
@@ -21,6 +21,22 @@ public final class LangUtil {
             Character.UnicodeScript sc = Character.UnicodeScript.of(s.charAt(i));
             if (sc == Character.UnicodeScript.HAN
                     || sc == Character.UnicodeScript.HIRAGANA
+                    || sc == Character.UnicodeScript.KATAKANA
+                    || sc == Character.UnicodeScript.HANGUL) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 是否含日文假名或韩文谚文（用于区分"中文"与"日文/韩文"，日文汉字与中文同属 HAN 无法直接区分）。 */
+    public static boolean containsJapaneseOrKorean(String s) {
+        if (s == null) {
+            return false;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            Character.UnicodeScript sc = Character.UnicodeScript.of(s.charAt(i));
+            if (sc == Character.UnicodeScript.HIRAGANA
                     || sc == Character.UnicodeScript.KATAKANA
                     || sc == Character.UnicodeScript.HANGUL) {
                 return true;

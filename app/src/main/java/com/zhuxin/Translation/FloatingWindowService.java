@@ -358,12 +358,22 @@ public class FloatingWindowService extends Service {
         });
     }
 
-    /** 是否含拉丁字母（英文等外文）。多行 OCR 结果也能正确匹配。 */
+    /** 是否含外文（拉丁字母、日文假名、韩文谚文、西里尔字母等），用于判断是否需要翻译。 */
     private boolean containsForeign(String text) {
         if (text == null) {
             return false;
         }
-        return java.util.regex.Pattern.compile("[A-Za-z]").matcher(text).find();
+        for (int i = 0; i < text.length(); i++) {
+            Character.UnicodeScript sc = Character.UnicodeScript.of(text.charAt(i));
+            if (sc == Character.UnicodeScript.LATIN
+                    || sc == Character.UnicodeScript.HIRAGANA
+                    || sc == Character.UnicodeScript.KATAKANA
+                    || sc == Character.UnicodeScript.HANGUL
+                    || sc == Character.UnicodeScript.CYRILLIC) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** 本地离线翻译：后台线程加载模型并推理。 */
